@@ -381,9 +381,9 @@ for IterationCount = 1:NofIteration
 %  In_Q = In_Q_cal;
 % IQ = MATLAB_directSCPI_Specan_IQ_Display_example(IP,Freq,RefLev,FsampleRx,NofSamples);
 % IQ=double(IQ);
-IQ2=zeros(Nsample,floor(NofSamples));
+IQ2 = zeros(Nsample,floor(NofSamples));
 IQ1 = MATLAB_directSCPI_Specan_IQ_Display_example(IP,Freq,RefLev,FsampleRx,Nsample*NofSamples);
-MATLAB_directSCPI_Specan_ACLR_Display(IP_2,Freq);
+%MATLAB_directSCPI_Specan_ACLR_Display(IP_2,Freq);
 %MATLAB_directSCPI_Specan_VSA_Display(IP);
 for i=1:Nsample
     IQ2(i,:)=IQ1((i-1)*floor(NofSamples)+1:i*floor(NofSamples));
