@@ -1,0 +1,117 @@
+<html>
+<head>
+<title>recsinewaves</title>
+<meta name="description" content="">
+<meta name="keywords" content="RECPRIMARYWAVE  REMPRIMARYWAVE 
+ ">
+<!--Comment-->
+</head>
+<font color=blue>function</font> varargout =  RECSINEWAVES( Data, Time, number )<br>
+<font color=green>% &nbsp;&nbsp;RECSINEWAVES&nbsp;Recover&nbsp;the&nbsp;sine&nbsp;waves&nbsp;of&nbsp;the&nbsp;waveform</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[X,Y]&nbsp;=&nbsp;RECSINEWAVES(DATA,TIME,&nbsp;NUMBEROFTONES);</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;This&nbsp;function&nbsp;will&nbsp;find&nbsp;the&nbsp;local&nbsp;peaks&nbsp;in&nbsp;the&nbsp;fft&nbsp;of&nbsp;the&nbsp;data&nbsp;assuming&nbsp;the&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;highest&nbsp;peak&nbsp;is&nbsp;the&nbsp;first&nbsp;peak.&nbsp;Then&nbsp;rebuild&nbsp;a&nbsp;waveform&nbsp;using&nbsp;only&nbsp;those&nbsp;frequencies.</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DATA&nbsp;is&nbsp;the&nbsp;data&nbsp;from&nbsp;the&nbsp;instrument.</font><br>
+<font color=green>% &nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TIME&nbsp;is&nbsp;a&nbsp;vector&nbsp;of&nbsp;time&nbsp;points&nbsp;where&nbsp;data&nbsp;was&nbsp;taken.</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NUMBEROFTONES&nbsp;is&nbsp;the&nbsp;maximum&nbsp;number&nbsp;of&nbsp;tones&nbsp;to&nbsp;use&nbsp;in&nbsp;reconstructing</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;waveform.&nbsp;&nbsp;If&nbsp;the&nbsp;maximum&nbsp;number&nbsp;is&nbsp;found&nbsp;is&nbsp;less&nbsp;than&nbsp;this&nbsp;then</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;only&nbsp;the&nbsp;tones&nbsp;found&nbsp;are&nbsp;used.&nbsp;&nbsp;If&nbsp;NUMBEROFTONES&nbsp;is&nbsp;not&nbsp;provided&nbsp;then&nbsp;the&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;peaks&nbsp;in&nbsp;the&nbsp;spectrum&nbsp;above&nbsp;the&nbsp;noise&nbsp;floor&nbsp;are&nbsp;used.</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;Example:</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[x,y]&nbsp;=&nbsp;RECSINEWAVES(Data,Time);</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;See&nbsp;also</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;RECPRIMARYWAVE,&nbsp;REMPRIMARYWAVE&nbsp;</font><br>
+<br>
+<code></code><br>
+<code><font color=blue>if</font> nargout ==3</code><br>
+<code>&nbsp;&nbsp;&nbsp;  varargout{1} = <font color=red>'Time [sec]'</font >;</code><br>
+<code>&nbsp;&nbsp;&nbsp;  varargout{2} = <font color=red>'Amplitude [V]'</font >;</code><br>
+<code>&nbsp;&nbsp;&nbsp;  varargout{3} = <font color=red>'Recover the sine waves of the waveform'</font >;</code><br>
+<code>&nbsp;&nbsp;&nbsp;  <font color=blue>return</font>;</code><br>
+<code><font color=blue>end</font>;	</code><br>
+<code></code><br>
+<code><font color=blue>if</font> nargin==0</code><br>
+<code>&nbsp;&nbsp;&nbsp;  help(mfilename)</code><br>
+<code>&nbsp;&nbsp;&nbsp;  <font color=blue>return</font>;</code><br>
+<code><font color=blue>end</font>;</code><br>
+<code></code><br>
+<code></code><br>
+<code>N=length(Data);</code><br>
+<code>meanValue = mean(Data);</code><br>
+<code>[val,freqidx]=localpeaksInternal(Data-meanValue); % Shown below</code><br>
+<code></code><br>
+<code><font color=blue>if</font> isempty(val)</code><br>
+<code>&nbsp;&nbsp;&nbsp;  fData = zeros(size(Data));</code><br>
+<code><font color=blue>else</font></code><br>
+<code>&nbsp;&nbsp;&nbsp;  numTones = length(val);</code><br>
+<code>&nbsp;&nbsp;&nbsp;  <font color=blue>if</font> nargin==3</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <font color=blue>if</font> (numTones&gt;number)</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  useTone=[1:number,numTones-number+1:numTones];</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  val=val(useTone);</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  freqidx=freqidx(useTone);</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <font color=blue>end</font>;</code><br>
+<code>&nbsp;&nbsp;&nbsp;  <font color=blue>end</font>;</code><br>
+<code>&nbsp;&nbsp;&nbsp;  freqidx = freqidx-1;</code><br>
+<code>&nbsp;&nbsp;&nbsp;  idxImage = find(freqidx&gt;floor(N/2));</code><br>
+<code>&nbsp;&nbsp;&nbsp;  val(idxImage)=-1*val(idxImage);</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp; </code><br>
+<code>&nbsp;&nbsp;&nbsp;  freq=(2*pi*(0:N-1)/N);</code><br>
+<code>&nbsp;&nbsp;&nbsp;  freq = freq(:)';</code><br>
+<code>&nbsp;&nbsp;&nbsp;  fData=zeros(size(freq));</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp; </code><br>
+<code>&nbsp;&nbsp;&nbsp;  idx=min(length(val),20); % This is just to make it faster (DEMO Code).</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp; </code><br>
+<code>&nbsp;&nbsp;&nbsp;  <font color=blue>for</font> c=1:idx;</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  fData=fData+val(c)*sin(freq*freqidx(c));</code><br>
+<code>&nbsp;&nbsp;&nbsp;  <font color=blue>end</font>;</code><br>
+<code><font color=blue>end</font>;	</code><br>
+<code>varargout{1} = Time;</code><br>
+<code>varargout{2} = fData;</code><br>
+<code></code><br>
+<code><font color=blue>function </font>[localPeakValue, localPeakIdx] = localpeaksInternal(waveformin)</code><br>
+<code><font color=green>% LOCALPEAKS	Find the amplitude of the primary frequecies.</font></code><br>
+<code><font color=green>%	</font></code><br>
+<code><font color=green>% This function will find the local peaks in the fft of the data using</font></code><br>
+<code><font color=green>% the given window size.  It does not report the peak of the DC signal </font></code><br>
+<code><font color=green>% and assumes the highest peak is the first peak.</font></code><br>
+<code><font color=green>%</font></code><br>
+<code><font color=green>%</font></code><br>
+<code><font color=green>% Notes:</font></code><br>
+<code><font color=green>% End of Notes.</font></code><br>
+<code></code><br>
+<code><font color=green>% Calculate FFT and frequency spacing </font></code><br>
+<code>&nbsp;N = length(waveformin);</code><br>
+<code>fftdata = abs(fft(waveformin))/N;</code><br>
+<code></code><br>
+<code><font color=green>% We are assuming that the first peak is the maximum except for DC</font></code><br>
+<code><font color=green>%	we are removing the DC component.</font></code><br>
+<code></code><br>
+<code><font color=green>% If a window width is not specified we will use half the</font></code><br>
+<code><font color=green>% distance from DC to first Peak as the window width.</font></code><br>
+<code>[maxPeak,idxPeak] = max(fftdata);</code><br>
+<code>windowWidth = floor(idxPeak/2)+1;</code><br>
+<code></code><br>
+<code><font color=green>% Find all the peak frequencies in the given window</font></code><br>
+<code>&nbsp;M = floor(N/windowWidth);</code><br>
+<code>fdata = reshape(fftdata(1:M*windowWidth),windowWidth,M);</code><br>
+<code>[localPeakValue,idxLocalPeak]=max(fdata);</code><br>
+<code>idxLocalPeak = idxLocalPeak(2:end)+((1:M-1)*windowWidth);</code><br>
+<code>localPeakValue = localPeakValue(2:end);</code><br>
+<code></code><br>
+<code><font color=green>% Find the noise floor</font></code><br>
+<code>noisefloor = mean(fftdata);</code><br>
+<code></code><br>
+<code><font color=green>% Only report back frequencies with values above 2*noise floor</font></code><br>
+<code>[newLocalPeakidx] = find(localPeakValue&gt;2*noisefloor);</code><br>
+<code>localPeakIdx = idxLocalPeak(newLocalPeakidx);</code><br>
+<code>localPeakValue = abs(localPeakValue(newLocalPeakidx));</code><br>
+<code></code><br>
+<code></code><br>
+<br><a href="intro.html">Return to Content</a></html>

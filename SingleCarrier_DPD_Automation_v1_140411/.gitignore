@@ -1,0 +1,9 @@
+# ignore .mat files
+*.mat
+*.asv
+/Calibration
+# /Instrument_Functions
+/Signals
+/TestSignals
+/Measurements
+/MatlabTestbench

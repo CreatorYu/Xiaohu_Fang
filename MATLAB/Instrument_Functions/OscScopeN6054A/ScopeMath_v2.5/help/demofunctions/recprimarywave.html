@@ -1,0 +1,74 @@
+<html>
+<head>
+<title>recprimarywave</title>
+<meta name="description" content="">
+<meta name="keywords" content="RECSINEWAVES  REMPRIMARYWAVE 
+ ">
+<!--Comment-->
+</head>
+<font color=blue>function</font> varargout =  RECPRIMARYWAVE( Data, Time )<br>
+<font color=green>% &nbsp;&nbsp;RECPRIMARYWAVE&nbsp;Recover&nbsp;the&nbsp;primary&nbsp;sine&nbsp;wave&nbsp;of&nbsp;the&nbsp;waveform</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[X,Y]&nbsp;=&nbsp;RECPRIMARYWAVE(DATA,TIME);</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;Calculates&nbsp;the&nbsp;primary&nbsp;tone&nbsp;in&nbsp;the&nbsp;signal&nbsp;and&nbsp;returns&nbsp;a&nbsp;sinewave&nbsp;that</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;represents&nbsp;the&nbsp;correct&nbsp;amplitude&nbsp;and&nbsp;phase.</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;Example:</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[x,y]&nbsp;=&nbsp;RECPRIMARYWAVE(Data,Time);</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;See&nbsp;also</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;RECSINEWAVES,&nbsp;REMPRIMARYWAVE&nbsp;</font><br>
+<br>
+<code></code><br>
+<code><font color=blue>if</font> nargout ==3</code><br>
+<code>&nbsp;&nbsp;&nbsp;  varargout{1} = <font color=red>'Time [sec]'</font >;</code><br>
+<code>&nbsp;&nbsp;&nbsp;  varargout{2} = <font color=red>'Units'</font >;</code><br>
+<code>&nbsp;&nbsp;&nbsp;  varargout{3} = <font color=red>'Recover the primary sine wave of the waveform'</font >;</code><br>
+<code>&nbsp;&nbsp;&nbsp;  <font color=blue>return</font>;</code><br>
+<code><font color=blue>end</font>;	</code><br>
+<code></code><br>
+<code></code><br>
+<code><font color=blue>if</font> nargin==0</code><br>
+<code>&nbsp;&nbsp;&nbsp;  help(mfilename)</code><br>
+<code>&nbsp;&nbsp;&nbsp;  <font color=blue>return</font>;</code><br>
+<code><font color=blue>end</font>;</code><br>
+<code><font color=green>% Take the FFT of the data and find the largest signal above DC</font></code><br>
+<code><font color=green>% then generate a sin wave with this frequency.</font></code><br>
+<code></code><br>
+<code><font color=green>% Get the length of the signal</font></code><br>
+<code>N=length(Data);</code><br>
+<code></code><br>
+<code><font color=green>% Take the FFT of the data removing DC</font></code><br>
+<code>fftdata = fft(Data-mean(Data));</code><br>
+<code></code><br>
+<code><font color=green>% Find the maximum peak in the FFT</font></code><br>
+<code>[y,idxTone] = max(fftdata);</code><br>
+<code>idxTone=idxTone;</code><br>
+<code></code><br>
+<code><font color=green>% Calculate the frequency that this peak represents.</font></code><br>
+<code>freq=(idxTone-1)/N;</code><br>
+<code></code><br>
+<code><font color=green>% Generate the sin wave that represents this frequency using the angle from</font></code><br>
+<code><font color=green>% the FFT data.</font></code><br>
+<code>a1=angle(fftdata(idxTone));</code><br>
+<code>a2=angle(fftdata(N-idxTone+2));</code><br>
+<code><font color=blue>if</font> a1&gt;=0</code><br>
+<code>&nbsp;&nbsp;&nbsp;  <font color=blue>if</font> a2&gt;0</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  disp(<font color=red>'Imaginary Results in FFT.  We have a problem.'</font >);</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  ang = 0;        </code><br>
+<code>&nbsp;&nbsp;&nbsp;  <font color=blue>else</font></code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  ang = a1+pi/2; % cos(ang)</code><br>
+<code>&nbsp;&nbsp;&nbsp;  <font color=blue>end</font>;</code><br>
+<code><font color=blue>else</font></code><br>
+<code>&nbsp;&nbsp;&nbsp;  <font color=blue>if</font> a2&gt;=0</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  ang = a1+pi/2; %sin(ang)</code><br>
+<code>&nbsp;&nbsp;&nbsp;  <font color=blue>else</font></code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  disp(<font color=red>'Imaginary Results in FFT.  We have a problem.'</font >);</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  ang = 0;        </code><br>
+<code>&nbsp;&nbsp;&nbsp;  <font color=blue>end</font>;</code><br>
+<code><font color=blue>end</font>;</code><br>
+<code>varargout{1}= Time;</code><br>
+<code>varargout{2}=(2*abs(y)/N)*sin(2*pi*(0:N-1)*freq+ang);</code><br>
+<br><a href="intro.html">Return to Content</a></html>

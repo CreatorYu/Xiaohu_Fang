@@ -1,0 +1,70 @@
+<html>
+<head>
+<title>wavepsd</title>
+<meta name="description" content="">
+<meta name="keywords" content="WAVEPSD2
+ ">
+<!--Comment-->
+</head>
+<font color=blue>function</font> varargout =  WAVEPSD( Data, Time, varargin )<br>
+<font color=green>% &nbsp;&nbsp;WAVEPSD&nbsp;Power&nbsp;spectral&nbsp;density&nbsp;of&nbsp;the&nbsp;waveform</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[X,Y]&nbsp;=&nbsp;WAVEPSD(DATA,TIME,WINDOW);</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;function&nbsp;will&nbsp;calculate&nbsp;the&nbsp;power&nbsp;spectral&nbsp;density</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;of&nbsp;the&nbsp;data&nbsp;passed&nbsp;to&nbsp;it&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WFORMIN&nbsp;is&nbsp;the&nbsp;data&nbsp;you&nbsp;wish&nbsp;calculate&nbsp;the&nbsp;power&nbsp;spectral&nbsp;desity&nbsp;of.</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WINDOW&nbsp;is&nbsp;the&nbsp;window&nbsp;to&nbsp;use&nbsp;and&nbsp;takes&nbsp;the&nbsp;following&nbsp;values:</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'RECTANGLE'&nbsp;uses&nbsp;a&nbsp;rectangulare&nbsp;window.</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'HANNING'&nbsp;uses&nbsp;a&nbsp;hanning&nbsp;window.</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'HAMMING'&nbsp;uses&nbsp;a&nbsp;hamming&nbsp;window.</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Relevant&nbsp;MATLAB&nbsp;Code&nbsp;that&nbsp;is&nbsp;executed:&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fData&nbsp;=&nbsp;20*log10(abs(fft(Data.*window))/sqrt(N));</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;Example:</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[x,y]&nbsp;=&nbsp;WAVEPSD(Data,Time);</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;See&nbsp;also</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;WAVEPSD2</font><br>
+<br>
+<code></code><br>
+<code><font color=blue>if</font> nargout ==3</code><br>
+<code>&nbsp;&nbsp;&nbsp;  varargout{1} = <font color=red>'Frequency [Hz]'</font >;</code><br>
+<code>&nbsp;&nbsp;&nbsp;  varargout{2} = <font color=red>'psd [dB]'</font >;</code><br>
+<code>&nbsp;&nbsp;&nbsp;  varargout{3} = <font color=red>'Power Spectral Density'</font >;</code><br>
+<code>&nbsp;&nbsp;&nbsp;  <font color=blue>return</font>;</code><br>
+<code><font color=blue>end</font>;	</code><br>
+<code></code><br>
+<code><font color=blue>if</font> nargin==0</code><br>
+<code>&nbsp;&nbsp;&nbsp;  help(mfilename)</code><br>
+<code>&nbsp;&nbsp;&nbsp;  <font color=blue>return</font>;</code><br>
+<code><font color=blue>end</font>;</code><br>
+<code></code><br>
+<code><font color=green>% Calculate the power spectral density of the data.</font></code><br>
+<code><font color=green>% put data in dB units.</font></code><br>
+<code></code><br>
+<code>N=length(Data);</code><br>
+<code><font color=blue>switch</font>(nargin)</code><br>
+<code>&nbsp;&nbsp;&nbsp;  <font color=blue>case</font> 2</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  window = ones(N,1);</code><br>
+<code>&nbsp;&nbsp;&nbsp;  <font color=blue>case</font> 3</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  windowName = varargin{1};</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <font color=blue>if</font> strcmp(upper(windowName(1:3)),<font color=red>'HAN'</font >)</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  window = hanning(N);</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <font color=blue>elseif</font> strcmp(upper(windowName(1:3)),<font color=red>'HAM'</font >)</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  window = hamming(N);           </code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <font color=blue>else</font></code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  window = ones(N,1);</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <font color=blue>end</font>;</code><br>
+<code><font color=blue>end</font>;</code><br>
+<code>Fs = 1/(Time(2)-Time(1));</code><br>
+<code>freq = ((0:N-1)./N)*Fs;</code><br>
+<code>fftdata = 20*log10(abs(fft(Data.*window'))/sqrt(N));</code><br>
+<code>varargout{1} = freq(1:floor(length(freq)/2));</code><br>
+<code>varargout{2} = fftdata(1:floor(length(fftdata)/2));</code><br>
+<br><a href="intro.html">Return to Content</a></html>

@@ -1,0 +1,29 @@
+% clear all;
+% SG=SignalGenerator_E4438C(19,-5);
+% SG.connect;
+% SG.preset;
+% SG.frequency(1e9);
+% SG.power(-5);
+% PM=PowerMeter_N1912A(13);
+% PM.connect;
+% PM.preset;
+% PM.frequency(1e9);
+% PM.offset(0);
+% PM.zero_and_cal;
+% 
+% x=[];
+% for i=-30:1:-5
+%     SG.power(i);
+%     SG.rf(1);
+%     x=[x PM.measure];
+%     SG.rf(0);
+% end
+
+clear all;
+PS_m=PowerSupply_N6705A(2);
+PS_a=PowerSupply_N5770A(5);
+
+PS_m.connect;
+PS_a.connect;
+
+

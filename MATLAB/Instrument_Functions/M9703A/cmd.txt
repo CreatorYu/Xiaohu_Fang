@@ -1,0 +1,47 @@
+AgMD1_InitiateAcquisition(ViSession);
+AgMD1_WaitForAcquisitionComplete(ViSession, MaxTimeMilliseconds); // MaxTimeMilliseconds=20
+AgMD1_WaitForAcquisitionComplete(ViSession, MaxTimeMilliseconds); // MaxTimeMilliseconds=20
+AgMD1_WaitForAcquisitionComplete(ViSession, MaxTimeMilliseconds); // MaxTimeMilliseconds=20
+AgMD1_WaitForAcquisitionComplete(ViSession, MaxTimeMilliseconds); // MaxTimeMilliseconds=20
+AgMD1_WaitForAcquisitionComplete(ViSession, MaxTimeMilliseconds); // MaxTimeMilliseconds=20
+AgMD1_WaitForAcquisitionComplete(ViSession, MaxTimeMilliseconds); // MaxTimeMilliseconds=20
+AgMD1_WaitForAcquisitionComplete(ViSession, MaxTimeMilliseconds); // MaxTimeMilliseconds=20
+AgMD1_WaitForAcquisitionComplete(ViSession, MaxTimeMilliseconds); // MaxTimeMilliseconds=20
+AgMD1_WaitForAcquisitionComplete(ViSession, MaxTimeMilliseconds); // MaxTimeMilliseconds=20
+AgMD1_WaitForAcquisitionComplete(ViSession, MaxTimeMilliseconds); // MaxTimeMilliseconds=20
+AgMD1_WaitForAcquisitionComplete(ViSession, MaxTimeMilliseconds); // MaxTimeMilliseconds=20
+AgMD1_WaitForAcquisitionComplete(ViSession, MaxTimeMilliseconds); // MaxTimeMilliseconds=20
+AgMD1_WaitForAcquisitionComplete(ViSession, MaxTimeMilliseconds); // MaxTimeMilliseconds=20
+AgMD1_WaitForAcquisitionComplete(ViSession, MaxTimeMilliseconds); // MaxTimeMilliseconds=20
+AgMD1_WaitForAcquisitionComplete(ViSession, MaxTimeMilliseconds); // MaxTimeMilliseconds=20
+AgMD1_WaitForAcquisitionComplete(ViSession, MaxTimeMilliseconds); // MaxTimeMilliseconds=20
+AgMD1_WaitForAcquisitionComplete(ViSession, MaxTimeMilliseconds); // MaxTimeMilliseconds=20
+AgMD1_WaitForAcquisitionComplete(ViSession, MaxTimeMilliseconds); // MaxTimeMilliseconds=20
+AgMD1_WaitForAcquisitionComplete(ViSession, MaxTimeMilliseconds); // MaxTimeMilliseconds=20
+AgMD1_WaitForAcquisitionComplete(ViSession, MaxTimeMilliseconds); // MaxTimeMilliseconds=20
+AgMD1_WaitForAcquisitionComplete(ViSession, MaxTimeMilliseconds); // MaxTimeMilliseconds=20
+AgMD1_WaitForAcquisitionComplete(ViSession, MaxTimeMilliseconds); // MaxTimeMilliseconds=20
+AgMD1_WaitForAcquisitionComplete(ViSession, MaxTimeMilliseconds); // MaxTimeMilliseconds=20
+AgMD1_WaitForAcquisitionComplete(ViSession, MaxTimeMilliseconds); // MaxTimeMilliseconds=20
+AgMD1_WaitForAcquisitionComplete(ViSession, MaxTimeMilliseconds); // MaxTimeMilliseconds=20
+AgMD1_WaitForAcquisitionComplete(ViSession, MaxTimeMilliseconds); // MaxTimeMilliseconds=20
+AgMD1_SendSoftwareTrigger(ViSession); 
+AgMD1_WaitForAcquisitionComplete(ViSession, MaxTimeMilliseconds); // MaxTimeMilliseconds=1
+AgMD1_FetchMultiRecordWaveformInt16(ViSession, ChannelName, FirstRecord, NumRecords, OffsetWithinRecord, NumPointsPerRecord, WaveformArrayBufferSize, <... return params>); // params="Channel1", 0, 1, 0, 10000, 20064, ...
+
+
+[WAVEFORMARRAY,WAVEFORMARRAYACTUALSIZE,ACTUALRECORDS,ACTUALPOINTS,FIRSTVALIDPOINT,INITIALXOFFSET,INITIALXTIMESECONDS,INITIALXTIMEFRACTION,XINCREMENT,SCALEFACTOR,SCALEOFFSET] = INVOKE(OBJ,'fetchmultirecordwaveformint16',CHANNELNAME,FIRSTRECORD,NUMRECORDS,OFFSETWITHINRECORD,NUMPOINTSPERRECORD,WAVEFORMARRAYBUFFERSIZE,WAVEFORMARRAY,ACTUALPOINTS,FIRSTVALIDPOINT,INITIALXOFFSET,INITIALXTIMESECONDS,INITIALXTIMEFRACTION)
+[WAVEFORMARRAY,ACTUALPOINTS,FIRSTVALIDPOINT,INITIALXOFFSET,INITIALXTIMESECONDS,INITIALXTIMEFRACTION,XINCREMENT,SCALEFACTOR,SCALEOFFSET] = INVOKE(OBJ,'fetchwaveformint16',CHANNELNAME,WAVEFORMARRAYSIZE,WAVEFORMARRAY)
+
+
+
+To enable IVI logs, please select 'Tools/Monitor Driver Call'.
+AgMD1_ConfigureAcquisition(ViSession, NumRecordsToAcquire, RecordSize, SampleRate); // NumRecordsToAcquire=1, RecordSize=1000, SampleRate=1e+09
+AgMD1_SetAttributeViReal64(ViSession, VI_NULL, AGMD1_ATTR_SAMPLE_RATE, SampleRate); // SampleRate=1e+09
+AgMD1_SetAttributeViReal64(ViSession, VI_NULL, AGMD1_ATTR_TRIGGER_DELAY , Delay); // Delay=0
+AgMD1_SetAttributeViString(ViSession, VI_NULL, AGMD1_ATTR_CHANNEL_ACTIVE_INPUTS, arg); // arg="Ch1Ch2Ch3Ch4Ch5Ch6Ch7Ch8"
+AgMD1_ConfigureAcquisition(ViSession, NumRecordsToAcquire, RecordSize, SampleRate); // NumRecordsToAcquire=1, RecordSize=1000, SampleRate=1e+09
+AgMD1_SetAttributeViReal64(ViSession, ChannelName, AGMD1_ATTR_INPUT_IMPEDANCE, arg); // ChannelName="Channel1", arg=50
+AgMD1_SetAttributeViReal64(ViSession, ChannelName, AGMD1_ATTR_CHANNEL_INPUT_FREQUENCY_MAX, arg); // ChannelName="Channel1", arg=0
+AgMD1_ConfigureChannel(ViSession, ChannelName, Range, Offset, Coupling, Enabled); // ChannelName="Channel1", Range=1, Offset=0, Coupling=1, Enabled=VI_TRUE
+AgMD1_SetAttributeViReal64(ViSession, RepCapIdentifier, AGMD1_ATTR_VERTICAL_OFFSET, Value); // RepCapIdentifier="Channel1", Value=0

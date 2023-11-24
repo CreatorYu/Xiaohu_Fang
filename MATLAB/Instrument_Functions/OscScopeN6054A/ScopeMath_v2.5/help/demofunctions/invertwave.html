@@ -1,0 +1,35 @@
+<html>
+<head>
+<title>invertwave</title>
+<meta name="description" content="">
+<meta name="keywords" content="SQUAREWAVE  PULSEWAVE  PULSEWAVE2  ZEROCROSSING 
+ ">
+<!--Comment-->
+</head>
+<font color=blue>function</font> varargout =  INVERTWAVE( Data, Time )<br>
+<font color=green>% &nbsp;&nbsp;INVERTWAVE&nbsp;Invert&nbsp;the&nbsp;waveform</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;Usage:</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;[X,Y]&nbsp;&nbsp;&nbsp;=&nbsp;INVERTWAVE(DATA,TIME);</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;MATLAB&nbsp;Code&nbsp;that&nbsp;is&nbsp;executed:&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fData&nbsp;=&nbsp;-1*Data;</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;See&nbsp;also</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;SQUAREWAVE,&nbsp;PULSEWAVE,&nbsp;PULSEWAVE2,&nbsp;ZEROCROSSING&nbsp;</font><br>
+<br>
+<code></code><br>
+<code><font color=blue>if</font> nargout ==3</code><br>
+<code>&nbsp;&nbsp;&nbsp;  varargout{1} = <font color=red>'Time'</font >;</code><br>
+<code>&nbsp;&nbsp;&nbsp;  varargout{2} = <font color=red>'Volts'</font >;</code><br>
+<code>&nbsp;&nbsp;&nbsp;  varargout{3} = <font color=red>'Inverted the Waveform'</font >;</code><br>
+<code>&nbsp;&nbsp;&nbsp;  <font color=blue>return</font>;</code><br>
+<code><font color=blue>end</font>;	</code><br>
+<code><font color=blue>if</font> nargin==0</code><br>
+<code>&nbsp;&nbsp;&nbsp;  help(mfilename)</code><br>
+<code>&nbsp;&nbsp;&nbsp;  <font color=blue>return</font>;</code><br>
+<code><font color=blue>end</font>;</code><br>
+<code>varargout{1} = Time;</code><br>
+<code>varargout{2} = -1*Data;</code><br>
+<br><a href="intro.html">Return to Content</a></html>

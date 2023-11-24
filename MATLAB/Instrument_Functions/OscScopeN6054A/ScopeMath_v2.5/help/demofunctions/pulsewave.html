@@ -1,0 +1,47 @@
+<html>
+<head>
+<title>pulsewave</title>
+<meta name="description" content="">
+<meta name="keywords" content="INVERTWAVE  SQUAREWAVE  PULSEWAVE2  ZEROCROSSING  
+ ">
+<!--Comment-->
+</head>
+<font color=blue>function</font> varargout =  PULSEWAVE( Data, Time )<br>
+<font color=green>% &nbsp;&nbsp;PULSEWAVE&nbsp;Create&nbsp;a&nbsp;pulse&nbsp;from&nbsp;a&nbsp;sine&nbsp;wave</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;Usage:</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;[X,Y]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;PULSEWAVE(DATA,TIME);</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MATLAB&nbsp;Code&nbsp;that&nbsp;is&nbsp;executed:&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;idxPositive&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;find(Data&gt;0);</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;idxNegative&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;find(Data&lt;0);</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fData&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;zeros(size(Data));</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fData(idxPositive)&nbsp;=&nbsp;1;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fData(idxNegative)&nbsp;=&nbsp;-1;</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;See&nbsp;also</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;INVERTWAVE,&nbsp;SQUAREWAVE,&nbsp;PULSEWAVE2,&nbsp;ZEROCROSSING&nbsp;&nbsp;</font><br>
+<br>
+<code></code><br>
+<code><font color=blue>if</font> nargout ==3</code><br>
+<code>&nbsp;&nbsp;&nbsp;  varargout{1} = <font color=red>'Time'</font >;</code><br>
+<code>&nbsp;&nbsp;&nbsp;  varargout{2} = <font color=red>'Units'</font >;</code><br>
+<code>&nbsp;&nbsp;&nbsp;  varargout{3} = <font color=red>'Create a pulse from a sine wave'</font >;</code><br>
+<code>&nbsp;&nbsp;&nbsp;  <font color=blue>return</font>;</code><br>
+<code><font color=blue>end</font>;	</code><br>
+<code></code><br>
+<code><font color=blue>if</font> nargin==0</code><br>
+<code>&nbsp;&nbsp;&nbsp;  help(mfilename)</code><br>
+<code>&nbsp;&nbsp;&nbsp;  <font color=blue>return</font>;</code><br>
+<code><font color=blue>end</font>;</code><br>
+<code></code><br>
+<code>Data = Data-mean(Data);</code><br>
+<code>idxPositive = find(Data&gt;0);</code><br>
+<code>idxNegative = find(Data&lt;0);</code><br>
+<code>fData = zeros(size(Data));</code><br>
+<code>fData(idxPositive) = 1;</code><br>
+<code>fData(idxNegative) = -1;</code><br>
+<code>varargout{1}=Time;</code><br>
+<code>varargout{2}=fData;</code><br>
+<br><a href="intro.html">Return to Content</a></html>

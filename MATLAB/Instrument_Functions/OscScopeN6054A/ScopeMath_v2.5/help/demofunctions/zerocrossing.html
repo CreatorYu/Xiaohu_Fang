@@ -1,0 +1,68 @@
+<html>
+<head>
+<title>zerocrossing</title>
+<meta name="description" content="">
+<meta name="keywords" content="INVERTWAVE  SQUAREWAVE  PULSEWAVE  PULSEWAVE2 
+ ">
+<!--Comment-->
+</head>
+<font color=blue>function</font> varargout =  ZEROCROSSING( Data, Time )<br>
+<font color=green>% &nbsp;&nbsp;ZEROCROSSING&nbsp;Return&nbsp;times&nbsp;found&nbsp;for&nbsp;zero&nbsp;crossings&nbsp;in&nbsp;data&nbsp;with</font><br>
+<font color=green>% &nbsp;&nbsp;interpolation</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;Usage:</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;[X,Y]&nbsp;&nbsp;&nbsp;=&nbsp;ZEROCROSSING(DATA,TIME);</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MATLAB&nbsp;Code&nbsp;that&nbsp;is&nbsp;executed:&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sig&nbsp;&nbsp;&nbsp;=&nbsp;(Data&gt;guardband)&nbsp;-&nbsp;(Data&lt;-guardband);</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;idx&nbsp;&nbsp;&nbsp;=&nbsp;find(sig);&nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;w&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;find(diff(sig(idx)));&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;idx1&nbsp;&nbsp;=&nbsp;idx(w);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;idx2&nbsp;&nbsp;=&nbsp;idx(w+1);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y1&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;waveform(idx1);&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y2&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;waveform(idx2);&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fData&nbsp;=&nbsp;((idx1&nbsp;-&nbsp;y1.*(idx2-idx1)./(y2-y1))-1)/Fs;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;See&nbsp;also</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;INVERTWAVE,&nbsp;SQUAREWAVE,&nbsp;PULSEWAVE,&nbsp;PULSEWAVE2&nbsp;</font><br>
+<br>
+<code></code><br>
+<code><font color=blue>if</font> nargout ==3</code><br>
+<code>&nbsp;&nbsp;&nbsp;  varargout{1} = <font color=red>'Index'</font >;</code><br>
+<code>&nbsp;&nbsp;&nbsp;  varargout{2} = <font color=red>'Time [sec]'</font >;</code><br>
+<code>&nbsp;&nbsp;&nbsp;  varargout{3} = <font color=red>'Return times found for zero crossings in data with interpolation'</font >;</code><br>
+<code>&nbsp;&nbsp;&nbsp;  <font color=blue>return</font>;</code><br>
+<code><font color=blue>end</font>;	</code><br>
+<code></code><br>
+<code><font color=blue>if</font> nargin==0</code><br>
+<code>&nbsp;&nbsp;&nbsp;  help(mfilename)</code><br>
+<code>&nbsp;&nbsp;&nbsp;  <font color=blue>return</font>;</code><br>
+<code><font color=blue>end</font>;</code><br>
+<code></code><br>
+<code><font color=green>%Remove mean</font></code><br>
+<code>Data=Data-mean(Data);</code><br>
+<code></code><br>
+<code><font color=green>% I use a guardband in case of noise.</font></code><br>
+<code>guardband = max(Data)*0.01;</code><br>
+<code></code><br>
+<code>sig = (Data&gt;guardband) - (Data&lt;-guardband);</code><br>
+<code></code><br>
+<code><font color=green>% Find the index of all the points outside of the guardband</font></code><br>
+<code>idx  = find(sig);  </code><br>
+<code></code><br>
+<code><font color=green>% Generate indexes of when we transition from one state to the other.</font></code><br>
+<code><font color=green>%   Remember a derivative (diff) is zero for constant values and a number if there is a change.</font></code><br>
+<code>&nbsp;w = find(diff(sig(idx))); </code><br>
+<code>idx1 = idx(w);              % Valid Point before Crossing state</code><br>
+<code>idx2 = idx(w+1);            % Valid Point after Crossing</code><br>
+<code></code><br>
+<code>y1 = Data(idx1); y2 = Data(idx2); % Get y values for interp</code><br>
+<code>Fs=1/(Time(2)-Time(1));</code><br>
+<code><font color=green>% Find Crossing using linear interpolation.  </font></code><br>
+<code><font color=green>%   index_value = current_index - current_y/slope</font></code><br>
+<code><font color=green>%   Times are the index_value/SampleRate.</font></code><br>
+<code>fData = ((idx1 - y1.*(idx2-idx1)./(y2-y1))-1)/Fs; </code><br>
+<code>varargout{1} = (1:length(fData));</code><br>
+<code>varargout{2} = fData;</code><br>
+<br><a href="intro.html">Return to Content</a></html>

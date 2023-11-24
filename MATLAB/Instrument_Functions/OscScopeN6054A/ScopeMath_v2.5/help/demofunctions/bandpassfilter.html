@@ -1,0 +1,74 @@
+<html>
+<head>
+<title>bandpassfilter</title>
+<meta name="description" content="">
+<meta name="keywords" content="LOWPASSFILTER  HIGHPASSFILTER
+ ">
+<!--Comment-->
+</head>
+<font color=blue>function</font> varargout =  BANDPASSFILTER( Data, Time, varargin )<br>
+<font color=green>% &nbsp;&nbsp;BANDPASSFILTER&nbsp;Filter&nbsp;data&nbsp;using&nbsp;bandpass&nbsp;Chebyshev&nbsp;filtering</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[X,Y]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;BANDPASSFILTER(DATA,&nbsp;TIME,&nbsp;FILTERORDER,RIPPLE,WN);</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;uses&nbsp;a&nbsp;cheby2&nbsp;filter&nbsp;design&nbsp;to&nbsp;calculate&nbsp;the&nbsp;filter&nbsp;coefficents.</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DATA&nbsp;is&nbsp;the&nbsp;waveform&nbsp;you&nbsp;wish&nbsp;to&nbsp;filter.</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIlTERORDER&nbsp;is&nbsp;the&nbsp;order&nbsp;of&nbsp;the&nbsp;filter&nbsp;to&nbsp;calculate.</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RIPPLE&nbsp;is&nbsp;the&nbsp;amount&nbsp;of&nbsp;exceptable&nbsp;ripple&nbsp;in&nbsp;DB.</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WN&nbsp;is&nbsp;the&nbsp;normalized&nbsp;cutoff&nbsp;frequency&nbsp;(vector).</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;options&nbsp;used&nbsp;if&nbsp;not&nbsp;provided&nbsp;are&nbsp;the&nbsp;following:</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FIlTERORDER&nbsp;=&nbsp;10;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RIPPLE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;20;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;[0.2,0.8];</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;Usage:</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;[X,Y]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;BANDPASSFILTER(DATA,TIME);</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Relevant&nbsp;MATLAB&nbsp;Code&nbsp;that&nbsp;is&nbsp;executed:&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[B,A]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=cheby2(filteroder,ripple,wn);</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fData&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;filter(B,A,Data);</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;Example:</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[x,y]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;BANDPASSFILTER(Data,Time);</font><br>
+<font color=green>% &nbsp;&nbsp;</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;See&nbsp;also</font><br>
+<font color=green>% &nbsp;&nbsp;&nbsp;LOWPASSFILTER,&nbsp;HIGHPASSFILTER</font><br>
+<br>
+<code></code><br>
+<code><font color=blue>if</font> nargout ==3</code><br>
+<code>&nbsp;&nbsp;&nbsp;  varargout{1} = <font color=red>'Time [sec]'</font >;</code><br>
+<code>&nbsp;&nbsp;&nbsp;  varargout{2} = <font color=red>'Amplitude [V]'</font >;</code><br>
+<code>&nbsp;&nbsp;&nbsp;  varargout{3} = <font color=red>'Filter data using bandpass Chebyshev filtering'</font >;</code><br>
+<code>&nbsp;&nbsp;&nbsp;  <font color=blue>return</font>;</code><br>
+<code><font color=blue>end</font>;	</code><br>
+<code></code><br>
+<code><font color=blue>switch</font>(nargin)</code><br>
+<code>&nbsp;&nbsp;&nbsp;  <font color=blue>case</font> 0</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  help bandpassfilter</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <font color=blue>return</font>;</code><br>
+<code>&nbsp;&nbsp;&nbsp;  <font color=blue>case</font> 2</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  filterorder = 10;</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  ripple = 20;</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Wn = [0.2,0.8];</code><br>
+<code>&nbsp;&nbsp;&nbsp;  <font color=blue>case</font> 3</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  filterorder = varargin{1};</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  ripple = 20;</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Wn = [0.2,0.8];</code><br>
+<code>&nbsp;&nbsp;&nbsp;  <font color=blue>case</font> 4</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  filterorder = varargin{1};</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  ripple = varargin{2};</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Wn = [0.2,0.8];</code><br>
+<code>&nbsp;&nbsp;&nbsp;  <font color=blue>case</font> 5</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  filterorder = varargin{1};</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  ripple = varargin{2};</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Wn = varargin{3};</code><br>
+<code>&nbsp;&nbsp;&nbsp;  otherwise</code><br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  error(<font color=red>'ScopeMath:bandpassfilter'</font ><font color=red>'Incorrect number of inputs.'</font >);</code><br>
+<code><font color=blue>end</font>;</code><br>
+<code>[B,A] = cheby2(filterorder,ripple,Wn,<font color=red>'bandpass'</font >);</code><br>
+<code>varargout{1} = Time;</code><br>
+<code>varargout{2} = filter(B,A,Data);</code><br>
+<code></code><br>
+<code></code><br>
+<br><a href="intro.html">Return to Content</a></html>

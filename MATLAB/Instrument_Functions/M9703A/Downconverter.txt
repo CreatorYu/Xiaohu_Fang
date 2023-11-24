@@ -1,0 +1,6 @@
+AgMD1_SetAttributeViInt32(ViSession, VI_NULL, AGMD1_ATTR_ACQUISITION_MODE, AcquisitionMode); // AcquisitionMode=12
+AgMD1_GetAttributeViReal64(ViSession, "Channel1", 1250900, &AttributeValue)
+AgMD1_GetAttributeViBoolean(ViSession, "", 1150066, &AttributeValue)
+AgMD1_InitiateAcquisition(ViSession);
+AgMD1_WaitForAcquisitionComplete(ViSession, MaxTimeMilliseconds); // MaxTimeMilliseconds=20
+AgMD1_FetchMultiRecordWaveformInt16(ViSession, ChannelName, FirstRecord, NumRecords, OffsetWithinRecord, NumPointsPerRecord, WaveformArrayBufferSize, <... return params>); // params="Channel1", 0, 1, 0, 10000, 40128, ...

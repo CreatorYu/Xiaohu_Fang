@@ -1,0 +1,1114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MATLABInstrumentDriver>
+   <FileVersion>1.0</FileVersion>
+   <DriverName>D:\A\matlab\matlab\toolbox\instrument\instrument\drivers\agilent_e3648a.mdd</DriverName>
+   <DriverType>MATLAB interface object</DriverType>
+   <InstrumentType>DC Power Supply</InstrumentType>
+   <InstrumentManufacturer>Agilent</InstrumentManufacturer>
+   <InstrumentModel>E3631A</InstrumentModel>
+   <InstrumentVersion>1.0</InstrumentVersion>
+   <Identify>*IDN?</Identify>
+   <Reset>*RST</Reset>
+   <Selftest>*TST?</Selftest>
+   <Error>System:Error?</Error>
+   <CreateInitCode>
+      <Code>function init(obj)
+% This method is called after the object is created.
+% OBJ is the device object.
+% End of function definition - DO NOT EDIT
+		</Code>
+   </CreateInitCode>
+   <ConnectInitCode>
+      <Type>InstrumentCommand</Type>
+   </ConnectInitCode>
+   <CleanupCode>
+      <Type>InstrumentCommand</Type>
+   </CleanupCode>
+   <GroupInfo>
+      <Group>
+         <Name>parent</Name>
+         <Description/>
+         <Command/>
+         <Size>1</Size>
+         <Mappings>
+            <ChannelMap Command="parent1" Index="1"/>
+         </Mappings>
+         <PropertyInfo/>
+         <MethodInfo>
+            <Method>
+               <Name>measure</Name>
+               <Location>parent</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>InstrumentCommand</Type>
+               <Code>
+                  <Commands>
+                     <Line Command="Measure:&lt;type&gt;:DC?" Format="text" Output="true" ReadOutputAs="ASCII"/>
+                     <Input>type</Input>
+                  </Commands>
+               </Code>
+               <Description>MEASURE Measure the voltage or current of output signal.
+
+OUT = INVOKE(OBJ, 'measure', 'TYPE') measures the voltage or current of the output signal of the instrument connected to device object, OBJ and returns value to OUT. If TYPE is 'voltage', the voltage is measured. If TYPE is 'current', the current is measured.</Description>
+            </Method>
+            <Method>
+               <Name>trigger</Name>
+               <Location>parent</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>InstrumentCommand</Type>
+               <Code>
+                  <Commands>
+                     <Line Command="INIT:IMM" Output="false"/>
+                     <Line Command="*TRG" Output="false"/>
+                  </Commands>
+               </Code>
+               <Description>TRIGGER Send a software trigger.
+
+INVOKE(OBJ, 'trigger') sends a software trigger to the instrument connected to device object.</Description>
+            </Method>
+         </MethodInfo>
+      </Group>
+      <Group>
+         <Name>calibration</Name>
+         <Description>The calibration group defines properties and functions related to instrument calibration.</Description>
+         <Command/>
+         <Size>1</Size>
+         <Mappings>
+            <ChannelMap Command="Calibration1" Index="1"/>
+         </Mappings>
+         <PropertyInfo>
+            <Property>
+               <Name>Count</Name>
+               <Location>calibration</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>InstrumentCommand</Type>
+               <Code>
+                  <Commands>
+                     <ConfigureCommand/>
+                     <QueryCommand>CAL:COUN?</QueryCommand>
+                  </Commands>
+               </Code>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>none</Constraint>
+               </PermissibleType>
+               <DefaultValue>0</DefaultValue>
+               <ReadOnly>always</ReadOnly>
+               <Description>Returns number of times the instrument has been calibrated.</Description>
+            </Property>
+            <Property>
+               <Name>Enabled</Name>
+               <Location>calibration</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>InstrumentCommand</Type>
+               <Code>
+                  <Commands>
+                     <ConfigureCommand/>
+                     <QueryCommand>CAL:SEC:STAT?</QueryCommand>
+                  </Commands>
+               </Code>
+               <PermissibleType>
+                  <Type>String</Type>
+                  <Constraint>enum</Constraint>
+                  <ConstraintValue>
+                     <Enum Name="on" Value="1"/>
+                     <Enum Name="off" Value="0"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>on</DefaultValue>
+               <ReadOnly>always</ReadOnly>
+               <Description>Query the secured state for calibration of the instrument.</Description>
+            </Property>
+            <Property>
+               <Name>Message</Name>
+               <Location>calibration</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% Return a property value.
+%   This function is called to return the device or group object property
+%   value. If the property is a group property, OBJ is the group object. If
+%   the property is a base device property, OBJ is the device object.
+
+% Get interface
+interface = get(get(obj,'parent'),'interface');
+
+% Ask for the string
+fprintf(interface,'CALibration:STRing?')
+
+% Pluck the string
+propertyValue = fscanf(interface);
+
+% Trim the trailing character (a non-printing char such as \n)
+%	and send it packing
+propertyValue(length(propertyValue)) = '';
+</GetMCode>
+                  <SetMCode>function set(obj,propertyName, propertyValue)
+
+% Set a property value.
+%	This function is called to set the device or group object property
+%	value. If the property is a group property, OBJ is the group object. If
+%	the property is a base device property, OBJ is the device object.
+
+%Error checking.
+if ~ischar(propertyValue)
+	error('MESSAGE must be a string.');
+end
+
+%Warning
+if length(propertyValue) &gt; 40
+	warning('ICDevice:longmessage',...
+		'Your message may only be 40 characters, and will be truncated');
+end
+
+%Get interface
+interface = get(get(obj,'parent'),'interface');
+
+%Write command to instrument
+fprintf(interface,['CAL:STR "' propertyValue '"']);
+</SetMCode>
+               </Code>
+               <PermissibleType>
+                  <Type>String</Type>
+                  <Constraint>none</Constraint>
+               </PermissibleType>
+               <DefaultValue>0</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>Specifies calibration information for the instrument.</Description>
+            </Property>
+         </PropertyInfo>
+         <MethodInfo>
+            <Method>
+               <Name>calibratecurrent</Name>
+               <Location>calibration</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function calibratecurrent(obj,minData,midData,maxData)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+%get the device
+device = get(obj,'Parent');
+
+%get the interface
+interface = get(device,'Interface');
+
+%set the min data
+fprintf(interface,'CAL:CURR:LEV MIN');
+fprintf(interface,'CAL:CURR:DATA ',num2str(minData)');
+
+%set the mid data
+fprintf(interface,'CAL:CURR:LEV MID');
+fprintf(interface,'CAL:CURR:DATA ',num2str(midData)');
+
+%set the max data
+fprintf(interface,'CAL:CURR:LEV Max');
+fprintf(interface,'CAL:CURR:DATA ',num2str(maxData)');
+</MCode>
+               </Code>
+               <Description/>
+            </Method>
+            <Method>
+               <Name>calibratevoltage</Name>
+               <Location>calibration</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function calibratecurrent(obj,minData,midData,maxData)
+% For group functions, OBJ is the group object. For
+% base device functions, OBJ is the device object.
+
+%get the device
+device = get(obj,'Parent');
+
+%get the interface
+interface = get(device,'Interface');
+
+%set the min data
+fprintf(interface,'CAL:VOLT:LEV MIN');
+fprintf(interface,'CAL:VOLT:DATA ',num2str(minData)');
+
+%set the mid data
+fprintf(interface,'CAL:VOLT:LEV MID');
+fprintf(interface,'CAL:VOLT:DATA ',num2str(midData)');
+
+%set the max data
+fprintf(interface,'CAL:VOLT:LEV MAX');
+fprintf(interface,'CAL:VOLT:DATA ',num2str(maxData)');</MCode>
+               </Code>
+               <Description/>
+            </Method>
+            <Method>
+               <Name>calibratevoltageprotection</Name>
+               <Location>calibration</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>InstrumentCommand</Type>
+               <Code>
+                  <Commands>
+                     <Line Command="CAL:VOLT:PROT" Output="false"/>
+                  </Commands>
+               </Code>
+               <Description>CALIBRATEVOLTAGEPROTECTION Calibrate the overvoltage protection circuit of the power supply.
+</Description>
+            </Method>
+            <Method>
+               <Name>securedevice</Name>
+               <Location>calibration</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function securedevice(obj, calibrationCode, state)
+% OBJ is the device object.
+% code is the code to secure the instrument
+
+%Get parent of object
+parent = get(obj,'parent');
+
+% Get interface.
+interface = get(parent,'interface');
+
+% Parse inputs.
+switch (nargin)
+case 1
+    error('CALIBRATIONCODE must be specified.');
+case 2
+    fprintf(interface,'CALibration:SECure:STATe?');
+    currentState = fscanf(interface, '%g');
+case 3
+    % STATE can either be 'secure' or 'unsecure'.
+    if ~any(strcmpi(state, {'secure', 'unsecure'}))
+        error('STATE must be either ''secure'' or ''unsecure''.');
+    end
+   
+    % Translating State into the expected current state numeric value.
+    if strcmpi(state, 'secure')
+        currentState = 0;
+    else
+        currentState = 1;
+    end
+otherwise
+    error('Too many input arguments.');
+end
+
+% Error checking.
+if ~ischar(calibrationCode)
+    error('CALIBRATIONCODE must be a string.');
+end
+
+% Unsecure or secure the instrument.
+switch (currentState)
+case 0
+    % Secure.
+    fprintf(interface,['CALibration:SECure:STATe ON, "' calibrationCode '"']);   
+case 1
+    % Unsecure.
+    fprintf(interface,['CALibration:SECure:STATe OFF, "' calibrationCode '"']);
+end
+      
+</MCode>
+               </Code>
+               <Description>SECUREDEVICE secure or unsecure the power supply for calibration
+
+INVOKE(OBJ, 'securedevice','code', STATE) to secure or unsecure the device. Use a STATE of ‘unsecure’ to unsecure the device before initiating the calibration process. Use a STATE of 'secure' to secure the device after the calibration process is complete.
+
+
+
+
+</Description>
+            </Method>
+            <Method>
+               <Name>updatecode</Name>
+               <Location>calibration</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function updatecode(obj,secureCode)
+% OBJ is the device object.
+% SecureCode is the new code.
+
+%Get the parent
+parent = get(obj,'parent');
+
+% Get the interface.
+interface = get(parent,'interface');
+
+% Validating the code (12-character format).
+if ~(isvarname(secureCode) &amp;&amp; length(secureCode) &lt;= 12)
+    error(['SECURECODE must be a character string with letters, ',...
+           'digits and ' sprintf('\n') 'underscores. The first character ',...
+           'in SECURECODE must be a letter.' sprintf('\n') 'The maximum length is 12 characters.']);
+end
+
+% Verifying that the device is unsecured before changing the code. 
+fprintf(interface,'CALibration:SECure:STATe?')
+state = fscanf(interface,'%g');
+
+if (state == 1)
+    error(['The device must be unsecured before changing the code.' sprintf('\n'),...
+        'Type ''instrhelp(obj, ''securedevice'')'' for more information on how ' sprintf('\n'),...
+        'to unsecure the device.']);
+    return
+end
+
+% Set the secure code to the new code.
+fprintf(interface,['CALibration:SECure:CODE "' secureCode '"'])</MCode>
+               </Code>
+               <Description>UPDATECODE Change the security code.
+
+INVOKE(OBJ, 'updatecode' NEWCODE) updates the calibration security code.  The instrument must first be unsecured using the current security code.
+
+See also SECUREDEVICE
+</Description>
+            </Method>
+         </MethodInfo>
+      </Group>
+      <Group>
+         <Name>display</Name>
+         <Description>Define the behavior of the instrument front panel display.</Description>
+         <Command/>
+         <Size>1</Size>
+         <Mappings>
+            <ChannelMap Command="Display1" Index="1"/>
+         </Mappings>
+         <PropertyInfo>
+            <Property>
+               <Name>Enabled</Name>
+               <Location>display</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>InstrumentCommand</Type>
+               <Code>
+                  <Commands>
+                     <ConfigureCommand>DISP</ConfigureCommand>
+                     <QueryCommand>DISP?</QueryCommand>
+                  </Commands>
+               </Code>
+               <PermissibleType>
+                  <Type>String</Type>
+                  <Constraint>enum</Constraint>
+                  <ConstraintValue>
+                     <Enum Name="on" Value="1"/>
+                     <Enum Name="off" Value="0"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>on</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>Set the state of the front panel display.</Description>
+            </Property>
+         </PropertyInfo>
+         <MethodInfo>
+            <Method>
+               <Name>clear</Name>
+               <Location>display</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>InstrumentCommand</Type>
+               <Code>
+                  <Commands>
+                     <Line Command="DISP:TEXT:CLE" Output="false"/>
+                  </Commands>
+               </Code>
+               <Description>CLEAR Clear the message displayed on the front panel.
+
+INVOKE(OBJ, 'clear') removes any message displayed on the instrument front panel.
+
+See also SETTEXT</Description>
+            </Method>
+            <Method>
+               <Name>settext</Name>
+               <Location>display</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function setText(obj,str)
+% OBJ is the device object.
+% str is the string to display
+
+%get parent
+parent = get(obj,'parent');
+
+%Get interface
+interface = get(parent,'interface');
+
+% Error checking.
+if ~ischar(str)
+    error('STR must be a string.');
+end
+
+% Write the command to instrument.
+fprintf(interface, ['Display:Text "' str '"']);
+
+
+</MCode>
+               </Code>
+               <Description>SETTEXT Set the string displayed on the instrument front panel.
+
+INVOKE(OBJ, 'displaytext', S) displays string, S, on the instrument's front panel.
+The Display group's Enable property must be on for the text to be visible.
+
+See also CLEAR.
+
+</Description>
+            </Method>
+         </MethodInfo>
+      </Group>
+      <Group>
+         <Name>output</Name>
+         <Description>Define the behavior and state of the outputs.</Description>
+         <Command>INSTRument:NSELect  &lt;ID&gt;</Command>
+         <Size>3</Size>
+         <Mappings>
+            <ChannelMap Command="3" Index="3"/>
+            <ChannelMap Command="2" Index="2"/>
+            <ChannelMap Command="1" Index="1"/>
+         </Mappings>
+         <PropertyInfo>
+            <Property>
+               <Name>CurrentLimit</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>InstrumentCommand</Type>
+               <Code>
+                  <Commands>
+                     <ConfigureCommand>Source:Current:Level:Immediate:Amplitude</ConfigureCommand>
+                     <QueryCommand>Source:Current:Level:Immediate:Amplitude?</QueryCommand>
+                  </Commands>
+               </Code>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>bounded</Constraint>
+                  <ConstraintValue>
+                     <Range Max="5.15" Min="0.0"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>bounded</Constraint>
+                  <ConstraintValue>
+                     <Range Max="1.03" Min="0.0"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>bounded</Constraint>
+                  <ConstraintValue>
+                     <Range Max="1.03" Min="0.0"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>4</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>Set and query the value of the output current limit.</Description>
+            </Property>
+            <Property>
+               <Name>CurrentStep</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>InstrumentCommand</Type>
+               <Code>
+                  <Commands>
+                     <ConfigureCommand>CURRent:STEP</ConfigureCommand>
+                     <QueryCommand>CURRent:STEP?</QueryCommand>
+                  </Commands>
+               </Code>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <DependentProperty>VoltageOutputRange</DependentProperty>
+                  <DependentPropertyValue>p15v</DependentPropertyValue>
+                  <Constraint>bounded</Constraint>
+                  <ConstraintValue>
+                     <Range Max="7.21" Min="9.57505E-5"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <DependentProperty>VoltageOutputRange</DependentProperty>
+                  <DependentPropertyValue>p30v</DependentPropertyValue>
+                  <Constraint>bounded</Constraint>
+                  <ConstraintValue>
+                     <Range Max="4.12" Min="9.57505E-5"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <PermissibleType>
+                  <Type>String</Type>
+                  <Constraint>enum</Constraint>
+                  <ConstraintValue>
+                     <Enum Name="default" Value="DEF"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>default</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>Set and query the step size used with the increasecurrent and decreasecurrent functions.
+
+</Description>
+            </Property>
+            <Property>
+               <Name>Enabled</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>InstrumentCommand</Type>
+               <Code>
+                  <Commands>
+                     <ConfigureCommand>Output:State</ConfigureCommand>
+                     <QueryCommand>Output:State?</QueryCommand>
+                  </Commands>
+               </Code>
+               <PermissibleType>
+                  <Type>String</Type>
+                  <Constraint>enum</Constraint>
+                  <ConstraintValue>
+                     <Enum Name="on" Value="1"/>
+                     <Enum Name="off" Value="0"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>on</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>Set and query the state of the output.</Description>
+            </Property>
+            <Property>
+               <Name>OverVoltageProtectionEnabled</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>InstrumentCommand</Type>
+               <Code>
+                  <Commands>
+                     <ConfigureCommand>Source:Voltage:Protection:State</ConfigureCommand>
+                     <QueryCommand>Source:Voltage:Protection:State?</QueryCommand>
+                  </Commands>
+               </Code>
+               <PermissibleType>
+                  <Type>String</Type>
+                  <Constraint>enum</Constraint>
+                  <ConstraintValue>
+                     <Enum Name="on" Value="1"/>
+                     <Enum Name="off" Value="0"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>on</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>Set and query the state of the over voltage protection feature.</Description>
+            </Property>
+            <Property>
+               <Name>OverVoltageProtectionLimit</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>InstrumentCommand</Type>
+               <Code>
+                  <Commands>
+                     <ConfigureCommand>Source:Voltage:Protection:Level</ConfigureCommand>
+                     <QueryCommand>Source:Voltage:Protection:Level?</QueryCommand>
+                  </Commands>
+               </Code>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>bounded</Constraint>
+                  <ConstraintValue>
+                     <Range Max="22.0" Min="1.0"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <PermissibleType>
+                  <Type>String</Type>
+                  <Constraint>enum</Constraint>
+                  <ConstraintValue>
+                     <Enum Name="min" Value="MIN"/>
+                     <Enum Name="max" Value="MAX"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>22.0</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>Set and query the over voltage protection limit.</Description>
+            </Property>
+            <Property>
+               <Name>State</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <GetMCode>function propertyValue = getProperty(obj, propertyName)
+% This function is called to get the group object property value.
+
+% Get the interface
+interface = get(get(obj,'parent'),'interface');
+
+fprintf(interface,'VOLTage:PROTection:TRIPped?');
+state = fscanf(interface);
+
+% If the over voltage protection is tripped, return 'tripped'
+if strncmp(state ,'1',1)
+    propertyValue = 'tripped';
+else    
+% Otherwise return state of output
+ fprintf(interface,'OUTPut:STATe?')
+ state = fscanf(interface);
+ if strncmp(state, '1',1)
+	 propertyValue = 'on';
+ elseif strncmp(state, '0',1);
+	 propertyValue = 'off';
+ else
+	 error(['Unknown value returned by device. Accepted values for'...
+		 ' State property are ''tripped'',''on'', and ''off''']);
+ end	
+	 
+end </GetMCode>
+                  <SetMCode>function set(obj, propertyName, propertyValue)
+% This function is called to set the group object property value.</SetMCode>
+               </Code>
+               <PermissibleType>
+                  <Type>String</Type>
+                  <Constraint>enum</Constraint>
+                  <ConstraintValue>
+                     <Enum Name="tripped" Value="tripped"/>
+                     <Enum Name="on" Value="on"/>
+                     <Enum Name="off" Value="off"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>tripped</DefaultValue>
+               <ReadOnly>always</ReadOnly>
+               <Description>Returns whether the voltage protection is tripped. </Description>
+            </Property>
+            <Property>
+               <Name>TriggerCurrentLimit</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>InstrumentCommand</Type>
+               <Code>
+                  <Commands>
+                     <ConfigureCommand>Source:Current:Level:Triggered:Amplitude</ConfigureCommand>
+                     <QueryCommand>Source:Current:Level:Triggered:Amplitude?</QueryCommand>
+                  </Commands>
+               </Code>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>bounded</Constraint>
+                  <ConstraintValue>
+                     <Range Max="7.21" Min="0.0"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <DependentProperty>VoltageOutputRange</DependentProperty>
+                  <DependentPropertyValue>p30v</DependentPropertyValue>
+                  <Constraint>bounded</Constraint>
+                  <ConstraintValue>
+                     <Range Max="4.12" Min="0.0"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <PermissibleType>
+                  <Type>String</Type>
+                  <Constraint>enum</Constraint>
+                  <ConstraintValue>
+                     <Enum Name="max" Value="MAX"/>
+                     <Enum Name="min" Value="MIN"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>5</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>Set or query the trigger ouput current limit.</Description>
+            </Property>
+            <Property>
+               <Name>TriggerDelay</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>InstrumentCommand</Type>
+               <Code>
+                  <Commands>
+                     <ConfigureCommand>Trigger:Sequence:Delay</ConfigureCommand>
+                     <QueryCommand>Trigger:Sequence:Delay?</QueryCommand>
+                  </Commands>
+               </Code>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>bounded</Constraint>
+                  <ConstraintValue>
+                     <Range Max="3600.0" Min="0.0"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <PermissibleType>
+                  <Type>String</Type>
+                  <Constraint>enum</Constraint>
+                  <ConstraintValue>
+                     <Enum Name="min" Value="MIN"/>
+                     <Enum Name="max" Value="MAX"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>0</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>Set or query the time delay between the detection of the trigger and the start of output.</Description>
+            </Property>
+            <Property>
+               <Name>TriggerSource</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>InstrumentCommand</Type>
+               <Code>
+                  <Commands>
+                     <ConfigureCommand>Trigger:Source</ConfigureCommand>
+                     <QueryCommand>Trigger:Source?</QueryCommand>
+                  </Commands>
+               </Code>
+               <PermissibleType>
+                  <Type>String</Type>
+                  <Constraint>enum</Constraint>
+                  <ConstraintValue>
+                     <Enum Name="bus" Value="BUS"/>
+                     <Enum Name="immediate" Value="IMM"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>bus</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>Set or query the trigger source.</Description>
+            </Property>
+            <Property>
+               <Name>TriggerVoltageLevel</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>InstrumentCommand</Type>
+               <Code>
+                  <Commands>
+                     <ConfigureCommand>Source:Voltage:Level:Triggered:Amplitude</ConfigureCommand>
+                     <QueryCommand>Source:Voltage:Level:Triggered:Amplitude?</QueryCommand>
+                  </Commands>
+               </Code>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>bounded</Constraint>
+                  <ConstraintValue>
+                     <Range Max="15.45" Min="0.0"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <DependentProperty>VoltageOutputRange</DependentProperty>
+                  <DependentPropertyValue>p30v</DependentPropertyValue>
+                  <Constraint>bounded</Constraint>
+                  <ConstraintValue>
+                     <Range Max="30.9" Min="0.0"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <PermissibleType>
+                  <Type>String</Type>
+                  <Constraint>enum</Constraint>
+                  <ConstraintValue>
+                     <Enum Name="min" Value="MIN"/>
+                     <Enum Name="max" Value="MAX"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>0</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>Set or query the trigger output voltage level.</Description>
+            </Property>
+            <Property>
+               <Name>VoltageLevel</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>InstrumentCommand</Type>
+               <Code>
+                  <Commands>
+                     <ConfigureCommand>Source:Voltage:Level:Immediate:Amplitude</ConfigureCommand>
+                     <QueryCommand>Source:Voltage:Level:Immediate:Amplitude?</QueryCommand>
+                  </Commands>
+               </Code>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>bounded</Constraint>
+                  <ConstraintValue>
+                     <Range Max="6.18" Min="0.0"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <DependentProperty>VoltageOutputRange</DependentProperty>
+                  <DependentPropertyValue>p30v</DependentPropertyValue>
+                  <Constraint>bounded</Constraint>
+                  <ConstraintValue>
+                     <Range Max="25.75" Min="0.0"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>bounded</Constraint>
+                  <ConstraintValue>
+                     <Range Max="0.0" Min="-25.75"/>
+                  </ConstraintValue>
+               </PermissibleType>
+               <DefaultValue>0</DefaultValue>
+               <ReadOnly>never</ReadOnly>
+               <Description>Set or query the trigger ouput voltage level.</Description>
+            </Property>
+         </PropertyInfo>
+         <MethodInfo>
+            <Method>
+               <Name>decreasecurrent</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>InstrumentCommand</Type>
+               <Code>
+                  <Commands>
+                     <Line Command="CURR DOWN" Output="false"/>
+                  </Commands>
+               </Code>
+               <Description>DECREASECURRENT Decrease the output current leve.
+
+INVOKE(OBJ, 'decreasecurrent') decreases the current by the amount specified in the CurrentStep property.
+</Description>
+            </Method>
+            <Method>
+               <Name>decreasevoltage</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>InstrumentCommand</Type>
+               <Code>
+                  <Commands>
+                     <Line Command="VOLT DOWN" Output="false"/>
+                  </Commands>
+               </Code>
+               <Description>DECREASEVOLTAGE Decrease the output voltage level.
+
+INVOKE(OBJ, 'decreasevoltage') decreases the output voltage by the amount specified in the VoltageStep property.
+</Description>
+            </Method>
+            <Method>
+               <Name>disable</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>InstrumentCommand</Type>
+               <Code>
+                  <Commands>
+                     <Line Command="Output:State OFF" Output="false"/>
+                  </Commands>
+               </Code>
+               <Description>DISABLE Disable specified output of the power supply.
+
+INVOKE(OBJ, 'disable') disable device output object, OBJ. OBJ can be an array of output objects.
+
+See also ENABLE.</Description>
+            </Method>
+            <Method>
+               <Name>enable</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>InstrumentCommand</Type>
+               <Code>
+                  <Commands>
+                     <Line Command="Output:State ON" Output="false"/>
+                  </Commands>
+               </Code>
+               <Description>ENABLE Enable device output of the instrument.
+
+INVOKE(OBJ, 'enable') enable device output object, OBJ. OBJ can be an array of output objects.
+
+See also DISABLE.</Description>
+            </Method>
+            <Method>
+               <Name>increasecurrent</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>InstrumentCommand</Type>
+               <Code>
+                  <Commands>
+                     <Line Command="CURR UP" Output="false"/>
+                  </Commands>
+               </Code>
+               <Description>INCREASECURRENT Increase the output current level.
+
+INVOKE(OBJ, 'increasecurrent') increases the current level by the amount specified in the CurrentLevel property.</Description>
+            </Method>
+            <Method>
+               <Name>increasevoltage</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>InstrumentCommand</Type>
+               <Code>
+                  <Commands>
+                     <Line Command="VOLT UP" Output="false"/>
+                  </Commands>
+               </Code>
+               <Description>INCREASEVOLTAGE Increase the voltage level.
+
+INVOKE(OBJ, 'increasevoltage') increases the voltage by the amount specified in the VoltageStep property.
+</Description>
+            </Method>
+            <Method>
+               <Name>resetvoltageprotection</Name>
+               <Location>output</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>InstrumentCommand</Type>
+               <Code>
+                  <Commands>
+                     <Line Command="Voltage:Protection:Clear" Output="false"/>
+                  </Commands>
+               </Code>
+               <Description>RESETVOLTAGEPROTECTION Clears the overvoltage protection state.
+
+INVOKE(OBJ, 'resetvoltageprotection') resets the overvoltage protection state.
+</Description>
+            </Method>
+         </MethodInfo>
+      </Group>
+      <Group>
+         <Name>system</Name>
+         <Description>General instrument system functionality.</Description>
+         <Command/>
+         <Size>1</Size>
+         <Mappings>
+            <ChannelMap Command="Util1" Index="1"/>
+         </Mappings>
+         <PropertyInfo>
+            <Property>
+               <Name>Version</Name>
+               <Location>system</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>InstrumentCommand</Type>
+               <Code>
+                  <Commands>
+                     <ConfigureCommand/>
+                     <QueryCommand>SYST:VERS?</QueryCommand>
+                  </Commands>
+               </Code>
+               <PermissibleType>
+                  <Type>Double</Type>
+                  <Constraint>none</Constraint>
+               </PermissibleType>
+               <DefaultValue>0</DefaultValue>
+               <ReadOnly>always</ReadOnly>
+               <Description>Returns the SCPI version of the instrument.</Description>
+            </Property>
+         </PropertyInfo>
+         <MethodInfo>
+            <Method>
+               <Name>beep</Name>
+               <Location>system</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>InstrumentCommand</Type>
+               <Code>
+                  <Commands>
+                     <Line Command="SYST:BEEP" Output="false"/>
+                  </Commands>
+               </Code>
+               <Description>BEEP Issue a beep.
+
+INVOKE(OBJ, 'beep') issues a beep from the instrument.</Description>
+            </Method>
+            <Method>
+               <Name>disablelocalcontrols</Name>
+               <Location>system</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function disablelocalcontrols(obj)
+% OBJ is the group object.
+
+% Get the interface
+interface = get(get(obj,'parent'),'interface');
+
+% Get the System interface
+fprintf(interface,'SYSTem:INTerface?');
+systemInterface =fscanf(interface);
+
+% If the interface is not RS232, generate an error
+if (strcmpi(systemInterface,'RS232')~= 1)
+    error('Must be in RS232 interface to use this function');
+    return
+end
+
+% Otherewise send appropriate command
+fprintf(interface,'SYSTem:RWLock');
+</MCode>
+               </Code>
+               <Description>DISABLELOCALCONTROLS Disable all front-panel buttons and knobs.
+
+INVOKE(OBJ, 'disablelocalcontrols') 'unlocks' all front-panel keys and knobs. Valid for RS-232 mode only.</Description>
+            </Method>
+            <Method>
+               <Name>enablelocalcontrols</Name>
+               <Location>system</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function enablelocalcontrols(obj)
+% OBJ is the group object.
+
+% Get the interface
+interface = get(get(obj,'parent'),'interface');
+
+% Get the (remote) system interface
+fprintf(interface,'SYSTem:INTerface?');
+systemInterface = fscanf(interface);
+
+% If the interface is not RS232, generate an error
+if (strcmpi(systemInterface,'RS232')~= 1)
+    error('Must be in RS232 interface to use this function');
+return
+end
+
+% Otherewise send appropriate command
+fprintf(interface,'SYSTem:LOCal');
+</MCode>
+               </Code>
+               <Description>ENABLELOCALCONTROLS Enable all front-panel buttons and knobs.
+
+INVOKE(OBJ, 'enablelocalcontrols') 'locks' all front-panel keys and knobs. Valid for RS-232 mode only.</Description>
+            </Method>
+            <Method>
+               <Name>loadstate</Name>
+               <Location>system</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function loadstate(obj,location)
+% OBJ is the group object.
+% LOCATION is the specified storage location
+
+% Get the interface
+interface = get(get(obj,'parent'),'interface');
+
+% Error checking
+    % LOCATION must be a scalar and between 1 and 3, inclusive.
+    if ~isnumeric(location) 
+        error('LOCATION must be numeric');
+    elseif  location &gt;3 || location &lt;1
+            error('LOCATION must be between 1 and 3 inclusive');
+    end
+    
+% Send memory name query command
+fprintf(interface,['*RCL ' num2str(location)])
+</MCode>
+               </Code>
+               <Description>LOADSTATE Recall a previously saved configuration.
+
+INVOKE(OBJ, 'loadstate', LOCATION) recalls the power supply state stored in the specified storage LOCATION.</Description>
+            </Method>
+            <Method>
+               <Name>savestate</Name>
+               <Location>system</Location>
+               <CapabilityGroup>Base</CapabilityGroup>
+               <Type>MCode</Type>
+               <Code>
+                  <MCode>function savestate(obj,location)
+% OBJ is the group object.
+% LOCATION is the specified storage location
+
+% Get the interface
+interface = get(get(obj,'parent'),'interface');
+
+% Error checking
+    % LOCATION must be a scalar and between 1 and 3, inclusive.
+    if ~isnumeric(location) 
+        error('LOCATION must be numeric');
+    elseif  location &gt;3 || location &lt;1
+            error('LOCATION must be between 1 and 3 inclusive');
+    end
+    
+% Send memory name query command
+fprintf(interface,['*SAV ' num2str(location)])
+
+
+
+</MCode>
+               </Code>
+               <Description>SAVESTATE Store a configuration.
+
+INVOKE(OBJ, 'savestate', LOCATION) stores the present configuration of theinstrument to the specified LOCATION. Any state previously stored in the same location is overwritten.</Description>
+            </Method>
+         </MethodInfo>
+      </Group>
+   </GroupInfo>
+</MATLABInstrumentDriver>

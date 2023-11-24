@@ -1,0 +1,56 @@
+%function VM_IMD_Auto
+    close all;
+    clear;
+    instrreset;
+    %instrhwinfo('gpib','agilent')
+    PXA=gpib('agilent', 7, 18);
+    PS1port=gpib('agilent', 7, 5); % The bottom one
+    PS2port=gpib('agilent', 7, 9);
+    DriverMDD = [pwd '\Instrument_Functions\PowerSupply_E3631A\agilent_e3631a.mdd'];
+    SaveDir = 'D:\Measurements\VM\';
+    PS1 = icdevice(DriverMDD, PS1port);
+    PS2 = icdevice(DriverMDD, PS2port);
+    
+    fopen(PXA);
+    connect(PS1);
+    connect(PS2);
+
+    PS1.Output(1).Enabled='on';
+    PS2.Output(1).Enabled='on';
+    
+    Vcom1 = 0.805;
+    Vos1 = 0.015;
+    Vcom2 = 0.805;
+    Vos2 = 0.015;
+    Count = 0;
+    
+    M1 = zeros(169,1); % 895M
+    M2 = zeros(169,1); % 905M
+    M3 = zeros(169,1); % 5th left
+    M4 = zeros(169,1); % 3rd left
+    M5 = zeros(169,1); % 3rd right
+    M6 = zeros(169,1); % 5th right
+    
+    for IC=-0.6:0.1:0.6
+        PS2.Output(1).VoltageLevel=Vcom1 + IC + Vos1;
+        PS2.Output(2).VoltageLevel=Vcom1 - IC - Vos1;
+        for QC = -0.6:0.1:0.6
+            PS1.Output(1).VoltageLevel=Vcom2 + QC - Vos2+0.002;
+            PS1.Output(2).VoltageLevel=Vcom2 - QC + Vos2;
+
+            Count = Count + 1;
+            pause(1);
+            
+            M1(Count)=str2double(query(PXA, 'CALC:MARK1:Y?'));
+            M2(Count)=str2double(query(PXA, 'CALC:MARK2:Y?'));
+            M3(Count)=str2double(query(PXA, 'CALC:MARK3:Y?'));
+            M4(Count)=str2double(query(PXA, 'CALC:MARK4:Y?'));
+            M5(Count)=str2double(query(PXA, 'CALC:MARK5:Y?'));
+            M6(Count)=str2double(query(PXA, 'CALC:MARK6:Y?'));
+        end
+    end
+    
+    invoke(PS1.System, 'beep');
+    fclose(PXA);
+%end
+

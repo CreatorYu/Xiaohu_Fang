@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestTool>
+   <TestOptions>
+      <RunMode>0</RunMode>
+      <FailAction>0</FailAction>
+      <NoErrorMessage>+0,"No error"</NoErrorMessage>
+      <NumDoubleValues>4</NumDoubleValues>
+   </TestOptions>
+   <OutputPanel>
+      <Verbosity>Show all results</Verbosity>
+   </OutputPanel>
+   <Root>
+      <Name>OscScopeN6054A test</Name>
+      <Description>A test to check some of the properties and functions of the N6054A Oscilloscope driver</Description>
+      <Driver>C:\Documents\Hassan\Pulsed_RF_CW_Automation_V0_140717\Instrument_Functions\OscScopeN6054A\Agilent546XX.mdd</Driver>
+      <Interface/>
+   </Root>
+   <Steps/>
+</TestTool>
